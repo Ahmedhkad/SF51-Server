@@ -1,0 +1,141 @@
+@import url("https://fonts.googleapis.com/css?family=Fira+Sans:300");
+
+
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b0b0c;
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 12px;
+}
+ 
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+.terminal,
+.terminal:before,
+.terminal:after,
+p:after {
+  position: absolute;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;     /* make main axis horizontal (default setting) */
+    justify-content: center; /* center items horizontally, in this case */
+    align-items: center;     /* center items vertically, in this case */
+  
+}
+
+.row {
+    width: 300px;
+    margin: 5px;
+    text-align: center;     /* will center text in <p>, which is not a flex item */
+}
+
+.terminal {
+  /* height: 80vh;
+  width: 80vw; */
+  margin: 10vh 0vw;
+  padding: 26px 4px 4px;
+  border-radius: 5px;
+  background: linear-gradient(#f6f6f6, #d3d3d3 20px, #7e7e7e 20px, #7e7e7e 21px, #393456 21px);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+  transition: all 0.5s ease;
+}
+.terminal:before {
+  content: " ";
+  width: 10px;
+  height: 10px;
+  margin: -20px 0 0 5px;
+  border-radius: 5px;
+  background: #fc625d;
+  box-shadow: 0 0 0 1px #de413e, 15px 0 #fec041, 15px 0 0 1px #dda035, 30px 0 #35cc4b, 30px 0 0 1px #28aa36;
+}
+.terminal:after {
+  width: 100%;
+  content: "SF51-Server";
+  top: 0;
+  text-align: center;
+  color: #4c4c4c;
+  line-height: 20px;
+}
+p {
+  color: #fff; 
+
+}
+p:before {
+  content: "$";
+  margin-right: 8px;
+  opacity: 0.5;
+  line-height: 18px;
+}
+p:last-child:after {
+  -webkit-animation: blink 1s linear 1s infinite;
+          animation: blink 1s linear 1s infinite;
+  content: " ";
+  width: 2px;
+  height: 18px;
+  margin-left: 1px;
+  background: #fec041;
+}
+@-webkit-keyframes blink {
+  0% {
+    background: rgba(254,192,65,0);
+  }
+  50% {
+    background: rgba(254,192,65,0);
+  }
+
+   
+  100% {
+    background: #fec041;
+  }
+}
+@keyframes blink {
+  0% {
+    background: rgba(254,192,65,0);
+  }
+  50% {
+    background: rgba(254,192,65,0);
+  }
+  
+  100% {
+    background: #fec041;
+  }
+}
+
+
+.header {   text-align: center; margin:0px auto; padding-top: 30px; background-color: #242424; color: #ecedec;}
+      .button {
+        margin: 20px;
+        padding: 15px 20px;
+        font-size: 24px;
+        text-align: center;
+        outline: none;
+        color: #fff;
+        background-color: #003185;
+        border: none;
+        border-radius: 30px;
+        box-shadow: 0 6px #999;
+        cursor: pointer;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+      }  
+      .button:hover {background-color: #83000f;}
+      .button:active {
+        background-color: #ed0000;;
+        box-shadow: 0 4px #666;
+        transform: translateY(2px);
+      }
+
+
