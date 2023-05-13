@@ -13,7 +13,9 @@
 
 <body>
     <div class="nav">
-        <button class="button" onclick="logoutButton()">Logout</button>
+        
+        <button class="button" id="out" onclick="logoutButton()">Logout</button>
+        <p id="loading">Updating...</p>
     </div>
     <div class="header"> 
         <h1>SF51-Server</h1>
@@ -26,8 +28,8 @@
     <div class="container">
         <div class="box">
             <p>LED State : <span style="color:red">OFFLINE</span> </p>
-            <p>Ping State : <span style="color:green">ONLINE</span> </p>
-
+            <p>Ping State : <span style="color:green">ONLINE</span></p>
+ <p id="loading2">Pinging...</p>
             <button class="button" onmousedown="toggleCheckbox('onStrongServer');"
                 ontouchstart="toggleCheckbox('onStrongServer');" onmouseup="toggleCheckbox('offStrongServer');"
                 ontouchend="toggleCheckbox('offStrongServer');">Start StrongServer</button>
