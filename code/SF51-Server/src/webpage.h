@@ -19,6 +19,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     max-width: 70em;
     margin: auto;
     flex-direction: row-reverse;
+    justify-content: space-between;
     }
 
     .header {
@@ -72,6 +73,7 @@ const char index_html[] PROGMEM = R"rawliteral(
    
     <div class="nav">
         <button class="button" onclick="logoutButton()">Logout</button>
+        <p id="loading">Updating...</p>
     </div>
     <div class="header"> 
         <h1>SF51-Server</h1>
@@ -85,6 +87,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         <div class="box">
             <p>LED State : <span id="StrongServerLEDid">---</span> </p>
             <p>Ping State : <span class="%StrongServerC%" id="StrongServerCid">%StrongServerC%</span> </p>
+            <p id="piningStrong">Pinging...</p>
 
             <button class="button" onmousedown="toggleCheckbox('onStrongServer');"
                 ontouchstart="toggleCheckbox('onStrongServer');" onmouseup="toggleCheckbox('offStrongServer');"
@@ -94,6 +97,7 @@ const char index_html[] PROGMEM = R"rawliteral(
         <div class="box">
              <p>LED State : <span id="CoolServerLEDid">---</span> </p>
             <p>Ping State : <span class="%CoolServerC%" id="CoolServerCid">%CoolServerC%</span> </p>
+            <p id="piningCool">Pinging...</p>
 
             <button class="button" onmousedown="toggleCheckbox('onCoolServer');"
                 ontouchstart="toggleCheckbox('onCoolServer');" onmouseup="toggleCheckbox('offCoolServer');"
@@ -109,6 +113,8 @@ const char index_html[] PROGMEM = R"rawliteral(
    }
 
 setInterval(function ( ) {
+  document.getElementById("loading").style.visibility = "visible";
+  setTimeout(() => {  document.getElementById("loading").style.visibility = "hidden"; }, 500);
     var xhttp = new XMLHttpRequest();
    xhttp.onreadystatechange = function() {
      if (this.readyState == 4 && this.status == 200) {
@@ -137,9 +143,11 @@ setInterval(function ( ) {
    };
    xhttp.open("GET", "/api/sensors", true);
    xhttp.send();
-   }, 5000 ) ;
+   }, 6000 ) ;
 
    setInterval(function ( ) {
+    document.getElementById("piningStrong").style.visibility = "visible";
+  setTimeout(() => {  document.getElementById("piningStrong").style.visibility = "hidden"; }, 3000);
    var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -149,9 +157,11 @@ setInterval(function ( ) {
   };
   xhttp.open("GET", "/StrongPing", true);
   xhttp.send();
-  }, 4000 ) ;
+  }, 8000 ) ;
 
   setInterval(function ( ) {
+    document.getElementById("piningCool").style.visibility = "visible";
+  setTimeout(() => {  document.getElementById("piningCool").style.visibility = "hidden"; }, 3000);
    var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
@@ -161,7 +171,7 @@ setInterval(function ( ) {
   };
   xhttp.open("GET", "/CoolPing", true);
   xhttp.send();
-  }, 3000 ) ;
+  }, 11000 ) ;
 
 function logoutButton() {
   var xhr = new XMLHttpRequest();
@@ -178,9 +188,10 @@ const char logout_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>body{text-align: center; background-color: grey;}</style>
 </head>
 <body>
-  <p>Logged out or <a href="/">return to homepage</a>.</p>
+  <p>You have beed logged out</p><a href="/">return to homepage</a>
   <p><strong>Note:</strong> close all web browser tabs to complete the logout process.</p>
 </body>
 </html>

@@ -47,8 +47,9 @@ unsigned long WifiDelayMillis = 0;
 const long WifiDelayInterval = 5000; // interval to check wifi and mqtt
 unsigned long TempDelayMillis = 0;
 unsigned long TempDelayInterval = 30000;
-unsigned long PingDelayMillis = 0;
-const long PingDelayInterval = 8000;
+
+unsigned long StrongPingDelayMillis = 0;
+unsigned long CoolPingDelayMillis = 0;
 
 AsyncWebServer server(webPORT);
 
@@ -316,9 +317,13 @@ void setup()
       request->send(response); });
 
   server.on("/StrongPing", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send_P(200, "text/plain", StrongServerPingC.c_str()); });
+            { 
+              StrongPingDelayMillis = currentMillis;
+              request->send_P(200, "text/plain", StrongServerPingC.c_str()); });
   server.on("/CoolPing", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send_P(200, "text/plain", CoolServerPingC.c_str()); });
+            { 
+              CoolPingDelayMillis = currentMillis;
+              request->send_P(200, "text/plain", CoolServerPingC.c_str()); });
 
   server.onNotFound(notFound);
 
@@ -346,24 +351,31 @@ void loop()
       client.publish(mqttDisconnectTopic, buffer, true);
       lastCount = count;
     }
-    CoolServerPingC = pingCoolServer();
   }
 
   if (currentMillis - TempDelayMillis >= TempDelayInterval)
   {
     TempDelayMillis = currentMillis;
-    sensors.requestTemperatures(); 
+    sensors.requestTemperatures();
     float tempC = sensors.getTempCByIndex(0);
-     
+
     char bufferx[150];
     tempdoc["ServerTemp"] = tempC;
     serializeJson(tempdoc, bufferx);
     client.publish("ServerTemp", bufferx, true);
   }
-  if (currentMillis - PingDelayMillis >= PingDelayInterval)
+  
+  if (currentMillis - StrongPingDelayMillis <= 120)
   {
-    PingDelayMillis = currentMillis;
     StrongServerPingC = pingStrongServer();
+    Serial.println("pinging Strong...");
+    delay(80);
+  }
+  if (currentMillis - CoolPingDelayMillis <= 120)
+  {
+    CoolServerPingC = pingCoolServer();
+    Serial.println("pinging Cool ...");
+    delay(80);
   }
 
   client.loop();
