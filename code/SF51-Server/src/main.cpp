@@ -38,6 +38,11 @@ String passjson;
 String StrongServerPingC = "";
 String CoolServerPingC = "";
 
+boolean boolPingStrongServer = false;
+boolean boolPingCoolServer = false;
+
+boolean MQTTServerState = false;
+
 int lastCount = 0;
 int count = 0;
 boolean PowerLock = true;
@@ -60,7 +65,8 @@ void notFound(AsyncWebServerRequest *request)
 
 String pingStrongServer()
 {
-  if (Ping.ping(StrongServer_ip))
+  boolPingStrongServer = Ping.ping(StrongServer_ip);
+  if (boolPingStrongServer)
   {
     // Serial.println("StrongServer_ip Success!!");
     return "ONLINE";
@@ -75,7 +81,8 @@ String pingStrongServer()
 
 String pingCoolServer()
 {
-  if (Ping.ping(CoolServer_ip))
+  boolPingCoolServer = Ping.ping(CoolServer_ip);
+  if (boolPingCoolServer)
   {
     // Serial.println("CoolServer_ip Success!!");
     return "ONLINE";
@@ -228,9 +235,11 @@ void reconnect()
       client.publish(mqttWillTopic, "online", true);
       // ... and resubscribe
       client.subscribe(subscribeTopic);
+      MQTTServerState = true;
     }
     else
     {
+      MQTTServerState = false;
       Serial.print("failed, rc=");
       Serial.print(client.state());
       Serial.println(" try again in 5 seconds");
@@ -274,9 +283,11 @@ void setup()
             {
     if(!request->authenticate(http_username, http_password)) 
        return request->requestAuthentication();
-    digitalWrite(StrongServer, HIGH);
+    if(!boolPingStrongServer){
+      digitalWrite(StrongServer, HIGH);
     client.publish("StrongServer", "ON");
     Serial.println("StrongServer ON");
+    }
     request->send(200, "text/plain", "ok"); });
   server.on("/offStrongServer", HTTP_GET, [](AsyncWebServerRequest *request)
             {
@@ -289,9 +300,11 @@ void setup()
             {
     if(!request->authenticate(http_username, http_password)) 
        return request->requestAuthentication();
-    digitalWrite(CoolServer, HIGH);
-    client.publish("CoolServer", "ON");
-    Serial.println("CoolServer ON");
+    if(!boolPingCoolServer){
+        digitalWrite(CoolServer, HIGH);
+        client.publish("CoolServer", "ON");
+        Serial.println("CoolServer ON");
+      }
     request->send(200, "text/plain", "ok"); });
   server.on("/offCoolServer", HTTP_GET, [](AsyncWebServerRequest *request)
             {
@@ -310,6 +323,7 @@ void setup()
       float tempS = sensors.getTempCByIndex(0);
        
       json["Temperature"] = tempS;
+      json["MQTTserver"] = MQTTServerState;
       json["StrongLED"] = digitalRead(StrongServerLDR);
       json["CoolLED"] = digitalRead(CoolServerLDR);
       serializeJson(json, *response);
@@ -324,6 +338,11 @@ void setup()
             { 
               CoolPingDelayMillis = currentMillis;
               request->send_P(200, "text/plain", CoolServerPingC.c_str()); });
+  server.on("/goOFFLINE", HTTP_GET, [](AsyncWebServerRequest *request)
+            { 
+              boolPingCoolServer = false;
+              boolPingStrongServer = false;
+              request->send_P(200, "text/plain", "OFFLINE"); });
 
   server.onNotFound(notFound);
 
@@ -364,7 +383,7 @@ void loop()
     serializeJson(tempdoc, bufferx);
     client.publish("ServerTemp", bufferx, true);
   }
-  
+
   if (currentMillis - StrongPingDelayMillis <= 120)
   {
     StrongServerPingC = pingStrongServer();
