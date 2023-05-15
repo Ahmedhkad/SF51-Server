@@ -12,8 +12,8 @@
 
 /* I/O pins selection of NodeMCU */ 
 
-#define StrongServer             5  //D1
-#define CoolServer               4  //D2 
+#define StrongServer             4  //D2 
+#define CoolServer               5  //D1
 
 #define CoolServerLDR           14 //D5 
 #define TempDallas              12 //D6   
