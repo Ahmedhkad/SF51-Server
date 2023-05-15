@@ -29,10 +29,13 @@ const char index_html[] PROGMEM = R"rawliteral(
     .temp {
     color: black;
     font-size: 20px;
-    margin: 1em auto;
-    width: 40em;
+    margin: 0.5em auto;
+    max-width: 40em;
     padding: 10px;
     border: 3px solid;
+    }
+    .mqtt{
+    color: inherit;
     }
 
     .container {
@@ -54,11 +57,25 @@ const char index_html[] PROGMEM = R"rawliteral(
     background-color: #04aa6d;
     font-family: "Source Sans Pro", sans-serif;
     color: white;
-    font-size: 18px;
+    font-size: 16px;
     padding: 6px 15px;
     margin-top: 5px;
     margin-right: 5px;
     border-radius: 5px;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    }
+    .button:hover {background-color: #046d1b;}
+    .button:active {
+    background-color: #ed0000;;
+    box-shadow: 0 4px #666;
+    transform: translateY(2px);
     }
     .ONLINE{
         color:green;
@@ -74,6 +91,7 @@ const char index_html[] PROGMEM = R"rawliteral(
     <div class="nav">
         <button class="button" onclick="logoutButton()">Logout</button>
         <p id="loading">Updating...</p>
+        <button class="button" onclick="goOffline()">pingOffline</button>
     </div>
     <div class="header"> 
         <h1>SF51-Server</h1>
@@ -83,10 +101,13 @@ const char index_html[] PROGMEM = R"rawliteral(
        <span id="temperaturec">--</span>
        <sup class="units">&deg;c</sup>
    </p>
+   <p class="mqtt temp"> MQTT Server:
+    <span id="mqttServer">---</span>
+    </p>
     <div class="container">
         <div class="box">
             <p>LED State : <span id="StrongServerLEDid">---</span> </p>
-            <p>Ping State : <span class="%StrongServerC%" id="StrongServerCid">%StrongServerC%</span> </p>
+            <p>Ping State : <span class="OFFLINE" id="StrongServerCid">---</span> </p>
             <p id="piningStrong">Pinging...</p>
 
             <button class="button" onmousedown="toggleCheckbox('onStrongServer');"
@@ -96,7 +117,7 @@ const char index_html[] PROGMEM = R"rawliteral(
 
         <div class="box">
              <p>LED State : <span id="CoolServerLEDid">---</span> </p>
-            <p>Ping State : <span class="%CoolServerC%" id="CoolServerCid">%CoolServerC%</span> </p>
+            <p>Ping State : <span class="OFFLINE" id="CoolServerCid">---</span> </p>
             <p id="piningCool">Pinging...</p>
 
             <button class="button" onmousedown="toggleCheckbox('onCoolServer');"
@@ -121,17 +142,24 @@ setInterval(function ( ) {
        var myObj = JSON.parse(this.responseText);
         console.log(myObj);
         var Temperature = myObj.Temperature;
+        var MQTTserver = myObj.MQTTserver;
         if (myObj.StrongLED == 0) {
             var StrongLEDc = "OFFLINE";
           }else if (myObj.StrongLED == 1){
          var StrongLEDc = "ONLINE";
           } 
-          if (myObj.CoolLED == 0) {
+        if (myObj.CoolLED == 0) {
             var CoolLEDc = "OFFLINE";
           }else if (myObj.CoolLED == 1){
          var CoolLEDc = "ONLINE";
           } 
-         
+        if (myObj.MQTTserver == 0) {
+            var MqttState = "OFFLINE";
+          }else if (myObj.MQTTserver == 1){
+         var MqttState = "ONLINE";
+          } 
+        document.getElementById("mqttServer").className = MqttState;
+        document.getElementById("mqttServer").innerHTML = MqttState;
         document.getElementById("temperaturec").innerHTML = Temperature;
         document.getElementById("StrongServerLEDid").innerHTML = StrongLEDc;
         document.getElementById("StrongServerLEDid").className = StrongLEDc;
@@ -173,6 +201,11 @@ setInterval(function ( ) {
   xhttp.send();
   }, 11000 ) ;
 
+function goOffline(){
+  var xhr = new XMLHttpRequest();
+  xhr.open("GET", "/goOFFLINE", true);
+  xhr.send();
+}
 function logoutButton() {
   var xhr = new XMLHttpRequest();
   xhr.open("GET", "/logout", true);
