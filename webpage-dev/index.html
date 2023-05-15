@@ -15,7 +15,9 @@
     <div class="nav">
         
         <button class="button" id="out" onclick="logoutButton()">Logout</button>
+        
         <p id="loading">Updating...</p>
+        <button class="button" onclick="goOffline()">pingOffline</button>
     </div>
     <div class="header"> 
         <h1>SF51-Server</h1>
@@ -25,6 +27,9 @@
        <span id="temperaturec">45</span>
        <sup class="units">&deg;c</sup>
    </p>
+   <p class="temp"> MQTT Server:
+    <span id="mqttServer">---</span>
+    </p>
     <div class="container">
         <div class="box">
             <p>LED State : <span style="color:red">OFFLINE</span> </p>
@@ -38,16 +43,16 @@
         <div class="box">
             <p>LED State : <span style="color:red">OFFLINE</span> </p>
             <p>Ping State : <span style="color:green">ONLINE</span> </p>
-
+            <p id="loading2">Pinging...</p>
             <button class="button" onmousedown="toggleCheckbox('onCoolServer');"
                 ontouchstart="toggleCheckbox('onCoolServer');" onmouseup="toggleCheckbox('offCoolServer');"
                 ontouchend="toggleCheckbox('offCoolServer');">Start CoolServer</button>
         </div>
     </div>
  
-    <button onclick="getReadings();">Click me</button>
+    <!-- <button onclick="getReadings();">Click me</button>
     <p>state : <span id="statusID"> </span> </p>
-    <p>ssid : <span id="ssidID"> </span> </p>
+    <p>ssid : <span id="ssidID"> </span> </p> -->
 
 
 </body>

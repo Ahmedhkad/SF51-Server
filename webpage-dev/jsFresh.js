@@ -33,7 +33,14 @@ document.getElementById("servertemp").style.backgroundColor  = 'hsl(' + [NewValu
           }else if (myObj.status == 1){
          var statusx = "ONLINE";
           } 
-          console.log(status);
+        if (myObj.MQTTserver == 0) {
+            var statusq = "OFFLINE";
+          }else if (myObj.MQTTserver == 1){
+         var statusq = "ONLINE";
+          } 
+          document.getElementById("mqttServer").className = statusq;
+          document.getElementById("mqttServer").innerHTML = statusq;
+
         document.getElementById("statusID").innerHTML = statusx;
         document.getElementById("ssidID").innerHTML = ssid;
         document.getElementById("temperaturec").textContent =t.toString();
